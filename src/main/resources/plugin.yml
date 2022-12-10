@@ -1,0 +1,25 @@
+name: ModserverUtils
+author: el_trueno
+version: 1.0
+main: es.eltrueno.modserverutils.Main
+description: Plugin que añade utilididades para servidores de mods con los panas
+commands:
+  homes:
+    description: Listar homes
+    aliases: [listhomes, homelist, homeslist]
+  sethome:
+    description: setear home
+  delhome:
+    description: borrar home
+  home:
+    description: Ir a home
+  tpa:
+    description: pedir tp
+  tpaccept:
+    description: aceptar tp
+  tpadeny:
+    description: denegar tp
+  back:
+    description: back
+  pickup:
+    description: activa o desactiva pickup
