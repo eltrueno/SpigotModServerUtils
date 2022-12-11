@@ -33,7 +33,7 @@ public class Main extends JavaPlugin implements CommandExecutor {
         }
         JsonDataManager.getRootJson();
 
-        registerHomeCommands();
+        registerCommands();
 
         Bukkit.getPluginManager().registerEvents(new MainEventsListener(), this);
         Bukkit.getPluginManager().registerEvents(new PickupListener(), this);
@@ -45,6 +45,8 @@ public class Main extends JavaPlugin implements CommandExecutor {
         Bukkit.getPluginCommand("tpa").setExecutor(new TpaCommandHandler());
         Bukkit.getPluginCommand("tpaccept").setExecutor(new TpaCommandHandler());
         Bukkit.getPluginCommand("tpadeny").setExecutor(new TpaCommandHandler());
+
+        registerHomeCommands();
     }
 
     private static void registerHomeCommands(){
@@ -59,6 +61,7 @@ public class Main extends JavaPlugin implements CommandExecutor {
         sethomeCommand.setExecutor(homeCmdHandler);
         delhomeCommand.setExecutor(homeCmdHandler);
     }
+
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
