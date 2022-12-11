@@ -1,6 +1,6 @@
 package es.eltrueno.modserverutils.listener;
 
-import es.eltrueno.modserverutils.pickupcancel.PickupCommandExecutor;
+import es.eltrueno.modserverutils.pickupcancel.PickupCommandHandler;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -13,7 +13,7 @@ public class PickupListener implements Listener {
     public void onPickup(EntityPickupItemEvent ev){
         if(ev.getEntityType()== EntityType.PLAYER){
             Player p = (Player) ev.getEntity();
-            if(PickupCommandExecutor.toCancelPickup.contains(p.getUniqueId())) ev.setCancelled(true);
+            if(PickupCommandHandler.toCancelPickup.contains(p.getUniqueId())) ev.setCancelled(true);
         }
     }
 

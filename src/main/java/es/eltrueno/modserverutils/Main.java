@@ -1,16 +1,17 @@
 package es.eltrueno.modserverutils;
 
-import es.eltrueno.modserverutils.home.HomeCommandExecutor;
+import es.eltrueno.modserverutils.home.HomeCommandHandler;
 import es.eltrueno.modserverutils.listener.MainEventsListener;
 import es.eltrueno.modserverutils.listener.PickupListener;
-import es.eltrueno.modserverutils.pickupcancel.PickupCommandExecutor;
-import es.eltrueno.modserverutils.tpa.TpaCommandExecutor;
+import es.eltrueno.modserverutils.pickupcancel.PickupCommandHandler;
+import es.eltrueno.modserverutils.tpa.TpaCommandHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -31,23 +32,32 @@ public class Main extends JavaPlugin implements CommandExecutor {
             e.printStackTrace();
         }
         JsonDataManager.getRootJson();
-        registerCommands();
+
+        registerHomeCommands();
 
         Bukkit.getPluginManager().registerEvents(new MainEventsListener(), this);
         Bukkit.getPluginManager().registerEvents(new PickupListener(), this);
     }
 
     private static void registerCommands(){
-        Bukkit.getPluginCommand("home").setExecutor(new HomeCommandExecutor());
-        Bukkit.getPluginCommand("homes").setExecutor(new HomeCommandExecutor());
-        Bukkit.getPluginCommand("sethome").setExecutor(new HomeCommandExecutor());
-        Bukkit.getPluginCommand("delhome").setExecutor(new HomeCommandExecutor());
+        Bukkit.getPluginCommand("pickup").setExecutor(new PickupCommandHandler());
 
-        Bukkit.getPluginCommand("pickup").setExecutor(new PickupCommandExecutor());
+        Bukkit.getPluginCommand("tpa").setExecutor(new TpaCommandHandler());
+        Bukkit.getPluginCommand("tpaccept").setExecutor(new TpaCommandHandler());
+        Bukkit.getPluginCommand("tpadeny").setExecutor(new TpaCommandHandler());
+    }
 
-        Bukkit.getPluginCommand("tpa").setExecutor(new TpaCommandExecutor());
-        Bukkit.getPluginCommand("tpaccept").setExecutor(new TpaCommandExecutor());
-        Bukkit.getPluginCommand("tpadeny").setExecutor(new TpaCommandExecutor());
+    private static void registerHomeCommands(){
+        PluginCommand homeCommand = Bukkit.getPluginCommand("home");
+        PluginCommand homesCommand = Bukkit.getPluginCommand("homes");
+        PluginCommand sethomeCommand = Bukkit.getPluginCommand("sethome");
+        PluginCommand delhomeCommand = Bukkit.getPluginCommand("delhome");
+
+        HomeCommandHandler homeCmdHandler = new HomeCommandHandler();
+        homeCommand.setExecutor(homeCmdHandler);
+        homesCommand.setExecutor(homeCmdHandler);
+        sethomeCommand.setExecutor(homeCmdHandler);
+        delhomeCommand.setExecutor(homeCmdHandler);
     }
 
     @Override

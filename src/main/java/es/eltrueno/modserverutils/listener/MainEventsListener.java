@@ -31,9 +31,9 @@ public class MainEventsListener implements Listener {
                     && !msg[0].equalsIgnoreCase("/pickup")
             ){
                 ev.setCancelled(true);
-                player.sendMessage("¿¿A ver, desde cuando existe ese comando en minecraft?? Imbecil");
+                player.sendMessage("¿¿A ver, desde cuando existe ese comando en minecraft?? Imbécil");
             }else if(msg[0].equalsIgnoreCase("/msg")){
-                Bukkit.getLogger().info("[MSG_LOG] "+ player.getName()+" escribio a "+msg[1]+" | "+ev.getMessage());
+                Bukkit.getLogger().info("[MSG_LOG] "+ player.getName()+" escribió a "+msg[1]+" | "+ev.getMessage());
             }else if(msg[0].equalsIgnoreCase("/help")){
                 player.sendMessage("§a======================================");
                 player.sendMessage("");
@@ -44,8 +44,6 @@ public class MainEventsListener implements Listener {
                 player.sendMessage("§e/tpa <jugador>: §fEnvia petición de tp a jugador");
                 player.sendMessage("§e/tpaccept: §fAcepta petición de tp (o click en el chat)");
                 player.sendMessage("§e/tpadeny: §fDeniega petición de tp (o click en el chat)");
-                player.sendMessage("");
-                player.sendMessage("§cNOTA: El sistema de TPA lo hice yo en 5min, asique seguramente este bugeadisimo :D. Si mandais peticion a la vez a alguien seguramente pete, asique no lo hagais :*");
                 player.sendMessage("");
                 player.sendMessage("§a======================================");
                 ev.setCancelled(true);

@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class PickupCommandExecutor implements CommandExecutor {
+public class PickupCommandHandler implements CommandExecutor {
 
     public static List<UUID> toCancelPickup = new ArrayList<UUID>();
 
