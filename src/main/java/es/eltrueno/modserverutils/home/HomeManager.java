@@ -48,7 +48,7 @@ public class HomeManager {
     }
 
     private static void cacheHomesFromJson(Player player){
-        if(homeCache.containsKey(player.getUniqueId().toString())) homeCache.remove(player.getUniqueId().toString());
+        homeCache.remove(player.getUniqueId().toString());
         List<Home> jsonHomes = getHomesFromJson(player.getUniqueId().toString());
         homeCache.put(player.getUniqueId().toString(), jsonHomes==null ? new ArrayList<>() : jsonHomes);
     }

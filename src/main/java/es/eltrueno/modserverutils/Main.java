@@ -4,6 +4,8 @@ import es.eltrueno.modserverutils.home.HomeCommandHandler;
 import es.eltrueno.modserverutils.listener.MainEventsListener;
 import es.eltrueno.modserverutils.listener.PickupListener;
 import es.eltrueno.modserverutils.pickupcancel.PickupCommandHandler;
+import es.eltrueno.modserverutils.playtime.PlaytimeManagerListener;
+import es.eltrueno.modserverutils.playtime.PlaytimeScheduler;
 import es.eltrueno.modserverutils.tpa.TpaCommandHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -37,6 +39,9 @@ public class Main extends JavaPlugin implements CommandExecutor {
 
         Bukkit.getPluginManager().registerEvents(new MainEventsListener(), this);
         Bukkit.getPluginManager().registerEvents(new PickupListener(), this);
+        Bukkit.getPluginManager().registerEvents(new PlaytimeManagerListener(), this);
+
+        new PlaytimeScheduler().runTaskTimerAsynchronously(this, 0, 20);
     }
 
     private static void registerCommands(){
