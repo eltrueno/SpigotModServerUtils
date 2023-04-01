@@ -4,6 +4,7 @@ import es.eltrueno.modserverutils.home.HomeCommandHandler;
 import es.eltrueno.modserverutils.listener.MainEventsListener;
 import es.eltrueno.modserverutils.listener.PickupListener;
 import es.eltrueno.modserverutils.pickupcancel.PickupCommandHandler;
+import es.eltrueno.modserverutils.playtime.PlaytimeCommandHandler;
 import es.eltrueno.modserverutils.playtime.PlaytimeManagerListener;
 import es.eltrueno.modserverutils.playtime.PlaytimeScheduler;
 import es.eltrueno.modserverutils.tpa.TpaCommandHandler;
@@ -51,6 +52,8 @@ public class Main extends JavaPlugin implements CommandExecutor {
         Bukkit.getPluginCommand("tpaccept").setExecutor(new TpaCommandHandler());
         Bukkit.getPluginCommand("tpadeny").setExecutor(new TpaCommandHandler());
 
+        Bukkit.getPluginCommand("playtime").setExecutor(new PlaytimeCommandHandler());
+
         registerHomeCommands();
     }
 
@@ -80,7 +83,7 @@ public class Main extends JavaPlugin implements CommandExecutor {
                         lastLocation.replace(p, p.getLocation());
                     }else lastLocation.put(p, p.getLocation());
                     p.teleport(loc);
-                }else p.sendMessage(ChatColor.RED+"A ver, imbécil. ¿Cómo vas a ir para atrás si no has ido a ningun lado aún, puto calvo?");
+                }else p.sendMessage(ChatColor.RED+"A ver, imbécil. ¿Cómo vas a ir para atrás si no has ido a ningún lado aún, puto calvo?");
             } else sender.sendMessage("Que haces?");
         }
         return true;

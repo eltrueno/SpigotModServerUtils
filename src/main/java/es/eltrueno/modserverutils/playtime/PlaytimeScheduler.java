@@ -4,6 +4,7 @@ import es.eltrueno.modserverutils.Main;
 import es.eltrueno.modserverutils.Utils;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -32,11 +33,11 @@ public class PlaytimeScheduler extends BukkitRunnable {
 
                     if(playtime.getTodaySeconds()<PlaytimeManager.LIMIT_TIME_SECONDS){
                         PlaytimeManager.savePlaytimeToCache(player,playtime);
-                        //ACTUALIZAR ACTIONBAR MSG
+
                         final long rest = PlaytimeManager.LIMIT_TIME_SECONDS - playtime.getTodaySeconds();
                         long minsLeft = Utils.minutesLeft(rest);
                         long secsLeft = Utils.secondsLeft(rest);
-                        if(minsLeft==10 || minsLeft==5){
+                        if(minsLeft==10 || minsLeft==5 || minsLeft==30){
                             Utils.runSync(()->player.sendMessage("§e¡Te quedan §6"+minsLeft+" minutos §ede tiempo de juego!"));
                         }else if(minsLeft==1){
                             Utils.runSync(()->player.sendMessage("§e¡Te queda solo §c1 minuto §ede tiempo de juego!"));
@@ -44,28 +45,46 @@ public class PlaytimeScheduler extends BukkitRunnable {
                             Utils.runSync(()->player.sendMessage("§e¡Te quedan §c"+secsLeft+" segundos §ede tiempo de juego!"));
                         }
 
-                        String tiempoFormatted = Utils.formatSeconds(rest);
                         final double percent = Utils.getPercent(PlaytimeManager.LIMIT_TIME_SECONDS, rest);
-                        Utils.runSync(()->{
-                            int barChars = 70;
-                            String bar = "";
-                            int barFill = (int)((percent/100)*barChars);
-                            System.out.println("barFill: "+barFill);
-                            System.out.println("percent: "+percent/100);
-                            int barRest = barChars-barFill;
-                            for(int i=1; i<=barFill; i++){
-                                bar+="§e|";
-                            }
-                            for(int i=1; i<=barRest; i++){
-                                bar+="§8|";
-                            }
-                            player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText("§eTiempo restante: §b"+tiempoFormatted+" §e["+bar+"§e]"));
-                        });
+                        final double reversepercent = 100-percent;
+
+                        String tiempoFormatted = Utils.formatSeconds(rest);
+
+                        //ACTUALIZAR ACTIONBAR MSG
+                        if(PlaytimeManager.actionbarVisible.contains(player.getUniqueId())) {
+
+                            Utils.runSync(() -> {
+                                int barChars = 70;
+                                String bar = "";
+                                int barFill = (int) ((percent / 100) * barChars);
+                                //System.out.println("barFill: "+barFill);
+                                //System.out.println("percent: "+percent/100);
+                                int barRest = barChars - barFill;
+                                for (int i = 1; i <= barFill; i++) {
+                                    bar += "§e|";
+                                }
+                                for (int i = 1; i <= barRest; i++) {
+                                    bar += "§8|";
+                                }
+                                player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText("§eTiempo restante: §b" + tiempoFormatted + " §e[" + bar + "§e]"));
+                            });
+                        }
+
+                        //ACTUALIZAR BOSSBAR
+                        if(PlaytimeManager.bossbarVisible.contains(player.getUniqueId())){
+                            Utils.runSync(() -> {
+                                BossBar bar = PlaytimeManager.getBossbar(player);
+                                bar.setProgress(percent/100);
+                                String bbtit = "§eTiempo restante: §b"+tiempoFormatted;
+                                bar.setTitle(bbtit);
+                                bar.setVisible(true);
+                            });
+                        }
                     }else{
                         PlaytimeManager.savePlaytimeToCache(player,playtime);
                         Utils.runSync(() -> PlaytimeManager.dumpCacheToJson(player));
                         //FUERA
-                        Utils.runSync(() -> player.kickPlayer("§eEres un puto viciado y has superado el límite de tiempo diário de §b"+ Utils.formatSecondsOmitting(PlaytimeManager.LIMIT_TIME_SECONDS)+'\n'+'\n'+"§eSe restablecerá a las §b00:00§e (España)"));
+                        Utils.runSync(() -> player.kickPlayer("§eEres un puto viciado y has superado el límite de tiempo diário de §b"+ Utils.calculateTotalTime(PlaytimeManager.LIMIT_TIME_SECONDS)+'\n'+'\n'+"§eSe restablecerá a las §b00:00§e (España)"));
                     }
                 }
             }

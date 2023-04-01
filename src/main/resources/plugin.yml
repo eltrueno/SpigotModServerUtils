@@ -23,3 +23,6 @@ commands:
     description: back
   pickup:
     description: activa o desactiva pickup
+  playtime:
+    description: revisa o cambia configuracion del sistema del limite de tiempo de juego diario
+    aliases: [tiempojuego, tiempo, tiempodejuego]

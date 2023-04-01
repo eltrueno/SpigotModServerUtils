@@ -2,6 +2,7 @@ package es.eltrueno.modserverutils.listener;
 
 import es.eltrueno.modserverutils.Main;
 import es.eltrueno.modserverutils.home.HomeManager;
+import es.eltrueno.modserverutils.playtime.PlaytimeManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -9,6 +10,8 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 public class MainEventsListener implements Listener {
 
@@ -29,6 +32,13 @@ public class MainEventsListener implements Listener {
                     && !msg[0].equalsIgnoreCase("/help")
                     && !msg[0].equalsIgnoreCase("/back")
                     && !msg[0].equalsIgnoreCase("/pickup")
+                    && !msg[0].equalsIgnoreCase("/playtime")
+                    && !msg[0].equalsIgnoreCase("/tiempo")
+                    && !msg[0].equalsIgnoreCase("/tiempojuego")
+                    && !msg[0].equalsIgnoreCase("/tiempodejuego")
+                    && !msg[0].equalsIgnoreCase("/listhomes")
+                    && !msg[0].equalsIgnoreCase("/homeslist")
+                    && !msg[0].equalsIgnoreCase("/homelist")
             ){
                 ev.setCancelled(true);
                 player.sendMessage("¿¿A ver, desde cuando existe ese comando en minecraft?? Imbécil");
@@ -38,12 +48,15 @@ public class MainEventsListener implements Listener {
                 player.sendMessage("§a======================================");
                 player.sendMessage("");
                 player.sendMessage("§e/pickup: §fActiva o desactiva la recolección de items del suelo");
-                player.sendMessage("§e/sethome <nombre>: §fEstablece un home ("+ HomeManager.MAX_HOMES +"§f max)");
-                player.sendMessage("§e/delhome <nombre>: §fBorra un home");
-                player.sendMessage("§e/home <nombre>: §fVe a tu home");
-                player.sendMessage("§e/tpa <jugador>: §fEnvia petición de tp a jugador");
+                player.sendMessage("§e/sethome §b<nombre>§e: §fEstablece un home ("+ HomeManager.MAX_HOMES +"§f max)");
+                player.sendMessage("§e/delhome §b<nombre>§e: §fBorra un home");
+                player.sendMessage("§e/home §b<nombre>§e: §fVe a tu home");
+                player.sendMessage("§e/tpa §b<jugador>§e: §fEnvia petición de tp a jugador");
                 player.sendMessage("§e/tpaccept: §fAcepta petición de tp (o click en el chat)");
                 player.sendMessage("§e/tpadeny: §fDeniega petición de tp (o click en el chat)");
+                player.sendMessage("§e/tiempo: §fMuestra información del tiempo de juego");
+                player.sendMessage("§e/tiempo §b[tophud,hudarriba]§e: §fMuestra/oculta el tiempo restante en la parte superior");
+                player.sendMessage("§e/tiempo §b[bottomhud,hudabajo]§e: §fMuestra/oculta el tiempo restante en la parte inferior");
                 player.sendMessage("");
                 player.sendMessage("§a======================================");
                 ev.setCancelled(true);
@@ -57,6 +70,19 @@ public class MainEventsListener implements Listener {
         if(Main.lastLocation.get(p)!=null){
             Main.lastLocation.replace(p, p.getLocation());
         }else Main.lastLocation.put(p, p.getLocation());
+    }
+
+    @EventHandler
+    public void onQuit(PlayerQuitEvent ev){
+        Player p = ev.getPlayer();
+        PlaytimeManager.deleteCachedBossbar(p);
+    }
+
+    @EventHandler
+    public void onJoin(PlayerJoinEvent ev){
+        Player p = ev.getPlayer();
+        if(!PlaytimeManager.actionbarVisible.contains(p.getUniqueId()))PlaytimeManager.actionbarVisible.add(p.getUniqueId());
+        if(!PlaytimeManager.bossbarVisible.contains(p.getUniqueId()))PlaytimeManager.bossbarVisible.add(p.getUniqueId());
     }
 
 }

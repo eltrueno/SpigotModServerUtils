@@ -24,6 +24,20 @@ public class Utils {
         return String.format("%02d:%02d:%02d", timeInSeconds / 3600, (timeInSeconds / 60) % 60, timeInSeconds % 60);
     }
 
+    public static String calculateTotalTime(long seconds) {
+        long sec = seconds % 60;
+        long minutes = seconds % 3600 / 60;
+        long hours = seconds % 86400 / 3600;
+        long days = seconds / 86400;
+
+        String ret = "";
+        ret+=days>0 ? days+" Días, " : "";
+        ret+=hours>0 ? hours+" Horas, " : "";
+        ret+=minutes>0 ? minutes+" Minutos, " : "";
+        ret+=sec>0 ? sec+" Segundos, " : "";
+        return ret;
+    }
+
     public static void runSync(Runnable runnable) {
         new BukkitRunnable() {
             @Override

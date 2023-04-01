@@ -3,6 +3,10 @@ package es.eltrueno.modserverutils.playtime;
 import com.google.gson.JsonObject;
 import es.eltrueno.modserverutils.JsonDataManager;
 import es.eltrueno.modserverutils.Utils;
+import org.bukkit.Bukkit;
+import org.bukkit.boss.BarColor;
+import org.bukkit.boss.BarStyle;
+import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 
 import java.time.Instant;
@@ -14,6 +18,11 @@ public class PlaytimeManager {
     public static final long LIMIT_TIME_SECONDS = 18000; //5H
 
     private static final HashMap<Player, Playtime> cachedPlaytime = new HashMap<Player, Playtime>();
+
+    private static final HashMap<Player, BossBar> cachedBossbar = new HashMap<Player, BossBar>();
+
+    public static List<UUID> actionbarVisible = new ArrayList<UUID>();
+    public static List<UUID> bossbarVisible = new ArrayList<UUID>();
 
     private static void savePlaytimeData(String uuid, JsonObject playtimeJsonObject){
         try {
@@ -50,6 +59,23 @@ public class PlaytimeManager {
 
     public static void deleteCachedPlayer(Player player){
         if(cachedPlaytime.containsKey(player))cachedPlaytime.remove(player);
+    }
+
+    public static void deleteCachedBossbar(Player player){
+        if(cachedBossbar.containsKey(player))cachedBossbar.remove(player);
+    }
+
+    public static BossBar getBossbar(Player player){
+        BossBar bar;
+        if(cachedBossbar.containsKey(player)) bar = cachedBossbar.get(player);
+        else{
+            bar = Bukkit.createBossBar("", BarColor.YELLOW, BarStyle.SOLID);
+            bar.addPlayer(player);
+            bar.setVisible(false);
+            bar.setProgress(1.0);
+            cachedBossbar.put(player, bar);
+        }
+        return bar;
     }
 
     public static void cachePlaytimeFromJson(Player player){
