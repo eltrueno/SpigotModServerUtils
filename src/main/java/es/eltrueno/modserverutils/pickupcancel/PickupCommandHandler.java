@@ -1,6 +1,5 @@
 package es.eltrueno.modserverutils.pickupcancel;
 
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -20,11 +19,17 @@ public class PickupCommandHandler implements CommandExecutor {
             if(sender instanceof Player){
                 Player p = (Player) sender;
                 if(toCancelPickup.contains(p.getUniqueId())){
-                    p.sendMessage(ChatColor.YELLOW+"§aActivada §ela recolección de items del suelo");
+                    if(p.getUniqueId().toString().equals("3c54db02-dbc9-4080-a7d4-22a4d6194606")){
+                        p.sendMessage("§aAhora coges items del suelo (Lo que te gustaría hacerla a Paulita)");
+                    }
+                    else p.sendMessage("§aActivada §ela recolección de items del suelo");
                     toCancelPickup.remove(p.getUniqueId());
                 }else{
                     toCancelPickup.add(p.getUniqueId());
-                    p.sendMessage(ChatColor.YELLOW+"§cCancelada §ela recolección de items del suelo");
+                    if(p.getUniqueId().toString().equals("3c54db02-dbc9-4080-a7d4-22a4d6194606")){
+                        p.sendMessage("§cAhora no coges items del suelo (igual que con Paulita)");
+                    }
+                    else p.sendMessage("§cCancelada §ela recolección de items del suelo");
                 }
             } else sender.sendMessage("Que haces?");
         }
