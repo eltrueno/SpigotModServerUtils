@@ -132,4 +132,11 @@ public class PlaytimeManager {
         return cachedPlaytime.keySet();
     }
 
+    public static boolean checkPlaytime(Player player){
+        Playtime playtime = PlaytimeManager.getPlaytime(player);
+        if(Utils.isSameDay(playtime.getTodayDate()) && playtime.getTodaySeconds()>= PlaytimeManager.LIMIT_TIME_SECONDS){
+            return false;
+        }else return true;
+    }
+
 }

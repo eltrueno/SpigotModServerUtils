@@ -4,9 +4,7 @@ import es.eltrueno.modserverutils.home.HomeCommandHandler;
 import es.eltrueno.modserverutils.listener.MainEventsListener;
 import es.eltrueno.modserverutils.listener.PickupListener;
 import es.eltrueno.modserverutils.pickupcancel.PickupCommandHandler;
-import es.eltrueno.modserverutils.playtime.PlaytimeCommandHandler;
-import es.eltrueno.modserverutils.playtime.PlaytimeManagerListener;
-import es.eltrueno.modserverutils.playtime.PlaytimeScheduler;
+import es.eltrueno.modserverutils.playtime.*;
 import es.eltrueno.modserverutils.tpa.TpaCommandHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -43,6 +41,17 @@ public class Main extends JavaPlugin implements CommandExecutor {
         Bukkit.getPluginManager().registerEvents(new PlaytimeManagerListener(), this);
 
         new PlaytimeScheduler().runTaskTimerAsynchronously(this, 0, 20);
+
+        new PlaytimeDumpScheduler().runTaskTimerAsynchronously(this, 0, 20*(10*60));
+    }
+
+    @Override
+    public void onDisable(){
+        for(Player player : PlaytimeManager.getPlayersCached()){
+            PlaytimeManager.dumpCacheToJson(player);
+            player.kickPlayer("§eEl servidor se ha cerrado, o a lo mejor es que expulsa automáticamente a los m@r1c0n3s. \nPrueba a volver a entrar más tarde :)");
+        }
+        Bukkit.getServer().getConsoleSender().sendMessage("§eSe han guardado los tiempos de juego de los jugadores conectados");
     }
 
     private static void registerCommands(){
