@@ -21,8 +21,7 @@ public class PlaytimeCommandHandler implements TabExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        if(label.equalsIgnoreCase("playtime")||label.equalsIgnoreCase("tiempo")
-                ||label.equalsIgnoreCase("tiempojuego")||label.equalsIgnoreCase("tiempodejuego")){
+        if(label.equalsIgnoreCase("playtime")||label.equalsIgnoreCase("tiempo")){
             if(sender instanceof Player){
                 Player p = (Player) sender;
                 Playtime playerPlaytime = PlaytimeManager.getPlaytime(p);
@@ -82,8 +81,7 @@ public class PlaytimeCommandHandler implements TabExecutor {
         if(sender instanceof Player){
             Player p = (Player) sender;
             String arg = args.length>=1 ? args[args.length-1]: "";
-            if((label.equalsIgnoreCase("playtime")||label.equalsIgnoreCase("tiempo")
-                    ||label.equalsIgnoreCase("tiempojuego")||label.equalsIgnoreCase("tiempodejuego")) && args.length == 1){
+            if((label.equalsIgnoreCase("playtime")||label.equalsIgnoreCase("tiempo")) && args.length == 1){
                 ArrayList<String> validArgs = new ArrayList<String>();
                 validArgs.add("tophud");
                 validArgs.add("bottomhud");
