@@ -8,6 +8,7 @@ import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.Calendar;
 import java.util.Date;
 
 public class PlaytimeScheduler extends BukkitRunnable {
@@ -18,15 +19,43 @@ public class PlaytimeScheduler extends BukkitRunnable {
         new BukkitRunnable() {
             @Override
             public void run() {
+                final Calendar now = Calendar.getInstance();
+                int minsUntilReset = -1;
+                //Reset msg
+                if(now.get(Calendar.HOUR_OF_DAY)==PlaytimeManager.RESET_HOUR-1 && now.get(Calendar.MINUTE)==0&& now.get(Calendar.SECOND)==0){
+                    //queda 1h
+                    minsUntilReset = 60;
+                }else if(now.get(Calendar.HOUR_OF_DAY)==PlaytimeManager.RESET_HOUR-1 && now.get(Calendar.MINUTE)==30&& now.get(Calendar.SECOND)==0){
+                    //queda 30m
+                    minsUntilReset = 30;
+                }else if(now.get(Calendar.HOUR_OF_DAY)==PlaytimeManager.RESET_HOUR-1 && now.get(Calendar.MINUTE)==50&& now.get(Calendar.SECOND)==0){
+                    //queda 10m
+                    minsUntilReset = 10;
+                }else if(now.get(Calendar.HOUR_OF_DAY)==PlaytimeManager.RESET_HOUR-1 && now.get(Calendar.MINUTE)==55&& now.get(Calendar.SECOND)==0){
+                    minsUntilReset = 5;
+                }
+
                 for(Player player : PlaytimeManager.getPlayersCached()){
                     Playtime playtime = PlaytimeManager.getPlaytime(player);
 
-                    if(!Utils.isSameDay(playtime.getTodayDate())){
+                    if((now.get(Calendar.HOUR_OF_DAY)==PlaytimeManager.RESET_HOUR && now.get(Calendar.MINUTE)==0 && now.get(Calendar.SECOND)==0)
+                    ||(!Utils.isSameDay(playtime.getTodayDate()) && now.get(Calendar.HOUR_OF_DAY)>=PlaytimeManager.RESET_HOUR)){
                         playtime.setTodayDate(new Date());
                         playtime.setTodaySeconds(0);
                         PlaytimeManager.savePlaytimeToCache(player,playtime);
                         Utils.runSync(() -> PlaytimeManager.dumpCacheToJson(player));
                         player.sendMessage("§ePor suerte para ti es un nuevo día y se ha reseteado el tiempo de juego. Ala, sigue viciandote perro");
+                    }
+
+                    //UNTIL RESET MSG
+                    if(minsUntilReset!=-1){
+                        String msg = "";
+                        if(minsUntilReset==60){
+                            msg = "§Queda §b1 hora §epara el reset del tiempo de juego";
+                        }else{
+                            msg = "§Quedan §b"+minsUntilReset+" minutos §epara el reset del tiempo de juego";
+                        }
+                        player.sendMessage(msg);
                     }
 
                     playtime.addSecond();

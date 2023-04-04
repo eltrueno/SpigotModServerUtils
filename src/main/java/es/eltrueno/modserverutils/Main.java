@@ -42,7 +42,7 @@ public class Main extends JavaPlugin implements CommandExecutor {
 
         new PlaytimeScheduler().runTaskTimerAsynchronously(this, 0, 20);
 
-        new PlaytimeDumpScheduler().runTaskTimerAsynchronously(this, 0, 20*(10*60));
+        new PlaytimeDumpScheduler().runTaskTimerAsynchronously(this, 20*60, 20*(10*60));
     }
 
     @Override

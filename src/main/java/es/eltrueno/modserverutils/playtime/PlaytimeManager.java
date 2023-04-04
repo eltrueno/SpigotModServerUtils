@@ -17,6 +17,8 @@ public class PlaytimeManager {
 
     public static final long LIMIT_TIME_SECONDS = 18000; //5H
 
+    public static final int RESET_HOUR = 4;
+
     private static final HashMap<Player, Playtime> cachedPlaytime = new HashMap<Player, Playtime>();
 
     private static final HashMap<Player, BossBar> cachedBossbar = new HashMap<Player, BossBar>();
@@ -134,8 +136,15 @@ public class PlaytimeManager {
 
     public static boolean checkPlaytime(Player player){
         Playtime playtime = PlaytimeManager.getPlaytime(player);
-        if(Utils.isSameDay(playtime.getTodayDate()) && playtime.getTodaySeconds()>= PlaytimeManager.LIMIT_TIME_SECONDS){
-            return false;
+        if(playtime.getTodaySeconds()>= PlaytimeManager.LIMIT_TIME_SECONDS){
+            if(Utils.isSameDay(playtime.getTodayDate())) return false;
+            else{
+                Calendar now = Calendar.getInstance();
+                if(now.get(Calendar.HOUR_OF_DAY)>=RESET_HOUR){
+                    //Sería nuevo día y se habría reseteado el tiempo
+                    return true;
+                }else return false;
+            }
         }else return true;
     }
 
