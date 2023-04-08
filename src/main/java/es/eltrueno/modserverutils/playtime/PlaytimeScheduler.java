@@ -10,6 +10,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 public class PlaytimeScheduler extends BukkitRunnable {
 
@@ -20,6 +21,7 @@ public class PlaytimeScheduler extends BukkitRunnable {
             @Override
             public void run() {
                 final Calendar now = Calendar.getInstance();
+                now.setTimeZone(TimeZone.getTimeZone("Europe/Madrid"));
                 int minsUntilReset = -1;
                 //Reset msg
                 if(now.get(Calendar.HOUR_OF_DAY)==PlaytimeManager.RESET_HOUR-1 && now.get(Calendar.MINUTE)==0&& now.get(Calendar.SECOND)==0){
@@ -38,9 +40,7 @@ public class PlaytimeScheduler extends BukkitRunnable {
                 for(Player player : PlaytimeManager.getPlayersCached()){
                     Playtime playtime = PlaytimeManager.getPlaytime(player);
 
-                    if((now.get(Calendar.HOUR_OF_DAY)==PlaytimeManager.RESET_HOUR && now.get(Calendar.MINUTE)==0 && now.get(Calendar.SECOND)==0)
-                    ||(!Utils.isSameDay(playtime.getTodayDate()) && now.get(Calendar.HOUR_OF_DAY)>=PlaytimeManager.RESET_HOUR)){
-                        playtime.setTodayDate(new Date());
+                    if(!PlaytimeManager.isVirtualSameDay(playtime.getTodayDate())){
                         playtime.setTodaySeconds(0);
                         PlaytimeManager.savePlaytimeToCache(player,playtime);
                         Utils.runSync(() -> PlaytimeManager.dumpCacheToJson(player));
@@ -51,9 +51,9 @@ public class PlaytimeScheduler extends BukkitRunnable {
                     if(minsUntilReset!=-1){
                         String msg = "";
                         if(minsUntilReset==60){
-                            msg = "§Queda §b1 hora §epara el reset del tiempo de juego";
+                            msg = "§eQueda §b1 hora §epara el reset del tiempo de juego";
                         }else{
-                            msg = "§Quedan §b"+minsUntilReset+" minutos §epara el reset del tiempo de juego";
+                            msg = "§eQuedan §b"+minsUntilReset+" minutos §epara el reset del tiempo de juego";
                         }
                         player.sendMessage(msg);
                     }
@@ -86,8 +86,6 @@ public class PlaytimeScheduler extends BukkitRunnable {
                                 int barChars = 70;
                                 String bar = "";
                                 int barFill = (int) ((percent / 100) * barChars);
-                                //System.out.println("barFill: "+barFill);
-                                //System.out.println("percent: "+percent/100);
                                 int barRest = barChars - barFill;
                                 for (int i = 1; i <= barFill; i++) {
                                     bar += "§e|";
@@ -113,7 +111,7 @@ public class PlaytimeScheduler extends BukkitRunnable {
                         PlaytimeManager.savePlaytimeToCache(player,playtime);
                         Utils.runSync(() -> PlaytimeManager.dumpCacheToJson(player));
                         //FUERA
-                        Utils.runSync(() -> player.kickPlayer("§eEres un puto viciado y has superado el límite de tiempo diário de §b"+ Utils.calculateTotalTime(PlaytimeManager.LIMIT_TIME_SECONDS)+'\n'+'\n'+"§eSe restablecerá a las §b00:00§e (España)"));
+                        Utils.runSync(() -> player.kickPlayer("§eEres un puto viciado y has superado el límite de tiempo diário de §b"+ Utils.calculateTotalTime(PlaytimeManager.LIMIT_TIME_SECONDS)+'\n'+'\n'+"§eSe restablecerá a las §b"+PlaytimeManager.RESET_HOUR+":00§e (España)"));
                     }
                 }
             }

@@ -102,12 +102,41 @@ public class PlaytimeManager {
 
     public static void dumpCacheToJson(Player player){
         Playtime playtime = getPlaytime(player);
+        playtime.setTodayDate(new Date());
         savePlaytimeToJson(player, playtime);
     }
 
     public static Playtime getPlaytime(Player player){
         if(!cachedPlaytime.containsKey(player)) cachePlaytimeFromJson(player);
         return cachedPlaytime.get(player);
+    }
+
+    public static boolean isVirtualSameDay(Date date1){
+        Calendar now = Calendar.getInstance();
+        now.setTimeZone(TimeZone.getTimeZone("Europe/Madrid"));
+        now.add(Calendar.HOUR_OF_DAY, -RESET_HOUR);
+
+        Calendar datec = Calendar.getInstance();
+        datec.setTimeZone(TimeZone.getTimeZone("Europe/Madrid"));
+        datec.setTime(date1);
+        datec.add(Calendar.HOUR_OF_DAY, -RESET_HOUR);
+
+        //Instant savedInst = datec.toInstant().truncatedTo(ChronoUnit.DAYS);
+        //Instant nowInst = now.toInstant().truncatedTo(ChronoUnit.DAYS);
+
+
+        final boolean sd = now.get(Calendar.DAY_OF_MONTH)==datec.get(Calendar.DAY_OF_MONTH);
+
+
+        /*if(now.get(Calendar.HOUR_OF_DAY)>=RESET_HOUR){
+            nowInst = new Date().toInstant().truncatedTo(ChronoUnit.DAYS);
+        }else{
+            Calendar now2 = Calendar.getInstance();
+            now2.add(Calendar.DAY_OF_YEAR, -1);
+            nowInst = now2.toInstant().truncatedTo(ChronoUnit.DAYS);
+        }*/
+
+        return sd;
     }
 
     public static Playtime getPlaytimeFromJson(String uuid){
@@ -121,7 +150,7 @@ public class PlaytimeManager {
             todaySeconds = playtimeJsonObj.get("todaySeconds").getAsLong();
             todayDate = new Date(playtimeJsonObj.get("todayDate").getAsLong());
 
-            if(!Utils.isSameDay(todayDate)){
+            if(!isVirtualSameDay(todayDate)){
                 todaySeconds = 0;
                 todayDate = new Date();
             }
@@ -136,15 +165,9 @@ public class PlaytimeManager {
 
     public static boolean checkPlaytime(Player player){
         Playtime playtime = PlaytimeManager.getPlaytime(player);
-        if(playtime.getTodaySeconds()>= PlaytimeManager.LIMIT_TIME_SECONDS){
-            if(Utils.isSameDay(playtime.getTodayDate())) return false;
-            else{
-                Calendar now = Calendar.getInstance();
-                if(now.get(Calendar.HOUR_OF_DAY)>=RESET_HOUR){
-                    //Sería nuevo día y se habría reseteado el tiempo
-                    return true;
-                }else return false;
-            }
+        if(playtime.getTodaySeconds()>= PlaytimeManager.LIMIT_TIME_SECONDS
+                && isVirtualSameDay(playtime.getTodayDate())){
+            return false;
         }else return true;
     }
 

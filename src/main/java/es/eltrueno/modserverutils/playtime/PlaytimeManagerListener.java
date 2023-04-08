@@ -13,8 +13,8 @@ public class PlaytimeManagerListener implements Listener {
     @EventHandler
     public void onQuit(PlayerQuitEvent event){
         Player player = event.getPlayer();
-        Bukkit.getServer().getConsoleSender().sendMessage("§eSe han guardado los tiempos de juego del jugador §b"+player.getName());
         PlaytimeManager.dumpCacheToJson(player);
+        Bukkit.getServer().getConsoleSender().sendMessage("§eSe han guardado los tiempos de juego del jugador §b"+player.getName());
         PlaytimeManager.deleteCachedPlayer(player);
     }
 
@@ -24,7 +24,8 @@ public class PlaytimeManagerListener implements Listener {
         PlaytimeManager.cachePlaytimeFromJson(player);
 
         if(!PlaytimeManager.checkPlaytime(player)){
-            event.disallow(PlayerLoginEvent.Result.KICK_OTHER, "§eEres un puto viciado y has superado el límite de tiempo diário de §b"+ Utils.formatSecondsOmitting(PlaytimeManager.LIMIT_TIME_SECONDS)+'\n'+'\n'+"§eSe restablecerá a las §b00:00§e (España)");
+            String msg = "§eEres un puto viciado y has superado el límite de tiempo diário de §b"+ Utils.formatSecondsOmitting(PlaytimeManager.LIMIT_TIME_SECONDS)+"§e.Se restablecerá a las §b"+PlaytimeManager.RESET_HOUR+":00§e (España)";
+            event.disallow(PlayerLoginEvent.Result.KICK_OTHER, msg);
             PlaytimeManager.deleteCachedPlayer(player);
         }
     }

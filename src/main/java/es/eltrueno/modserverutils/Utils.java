@@ -54,6 +54,8 @@ public class Utils {
         return (savedInst.equals(nowInst));
     }
 
+
+
     public static long minutesLeft(long todaySeconds){
         long secondsLeft = todaySeconds % 3600 % 60;
         long minutes = (int) Math.floor(todaySeconds % 3600 / 60);
